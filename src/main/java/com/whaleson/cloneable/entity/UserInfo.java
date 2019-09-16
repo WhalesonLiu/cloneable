@@ -19,4 +19,6 @@ public class UserInfo {
     private String account;
 
     private String password;
+
+    private AddressInfo address;
 }

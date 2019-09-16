@@ -1,6 +1,8 @@
 package com.whaleson.cloneable;
 
+import com.whaleson.cloneable.core.ClonableBeanUtils;
 import com.whaleson.cloneable.dto.UserInfoDto;
+import com.whaleson.cloneable.entity.AddressInfo;
 import com.whaleson.cloneable.entity.UserInfo;
 
 import java.beans.IntrospectionException;
@@ -19,9 +21,15 @@ public class Test1 {
         userInfo.setUsername("Whaleson");
         userInfo.setPassword("demo");
 
+        AddressInfo addressInfo = new AddressInfo();
+        addressInfo.setAddressId("10001");
+        addressInfo.setCountry("China");
+        addressInfo.setCity("Shanghai");
+        userInfo.setAddress(addressInfo);
+
         UserInfoDto userInfoDto = new UserInfoDto();
-        //ClonableBeanUtils.copyPropertiesByIntrospector(userInfo,userInfoDto);
-        System.out.println(userInfoDto.getAccount());
+        ClonableBeanUtils.copyPropertiesByReflect(userInfo,userInfoDto);
+        System.out.println(userInfoDto.getAddress().getCountry());
 
 
         /*BeanUtils.copyProperties(userInfo,userInfoDto);

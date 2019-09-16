@@ -31,24 +31,42 @@ public class ClonableBeanUtils {
             field.setAccessible(true);
 
             if (field.getType().getClassLoader() != null) {
-                Object subTarget = field.get(target);
+                Object subSource = field.get(source);
+                String subFieldName = field.getName();
+                try {
+                    Field targetObjectField = targetCls.getDeclaredField(subFieldName);
+                    targetObjectField.setAccessible(true);
+                    Object subTarget =targetObjectField.get(target);
+                    if(subTarget == null){
+                        System.out.println(targetObjectField.getType().getName());
+                        subTarget = targetObjectField.getType().newInstance();
+                    }
+                    copyPropertiesByReflect(subSource,subTarget);
+                    //set sub element
+                    targetObjectField.set(target,subTarget);
 
-
-            }
-            String sourceFieldName = field.getName();
-            try {
-                Object sourceFieldValue = field.get(source);
-                //set value
-                Field targetField = getField(targetCls, sourceFieldName);
-
-                if (targetField != null) {
-                    targetField.getDeclaringClass();
-                    targetField.setAccessible(true);
-                    targetField.set(target, sourceFieldValue);
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
                 }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            }else{
+                String sourceFieldName = field.getName();
+                try {
+                    Object sourceFieldValue = field.get(source);
+                    //set value
+                    Field targetField = getField(targetCls, sourceFieldName);
+
+                    if (targetField != null) {
+
+                        //targetField.getDeclaringClass();
+                        System.out.println(target.getClass().getName() + "\t\t" +sourceFieldValue);
+                        targetField.setAccessible(true);
+                        targetField.set(target, sourceFieldValue);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
+
         }
     }
 
@@ -107,26 +125,6 @@ public class ClonableBeanUtils {
             e.printStackTrace();
         }
         source.getClass();
-
-    }
-    private static void setTartgetValue(Class source,Class target){
-        try {
-            if(source == null){
-                target = null;
-                return;
-            }
-
-            BeanInfo sourceBeanInfo = Introspector.getBeanInfo(source);
-            BeanInfo targetBeanInfo = Introspector.getBeanInfo(target);
-
-            PropertyDescriptor [] targetPropertyDescriptor = targetBeanInfo.getPropertyDescriptors();
-            for (PropertyDescriptor propertyDescriptor : targetPropertyDescriptor){
-                //propertyDescriptor.
-
-            }
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        }
 
     }
 }

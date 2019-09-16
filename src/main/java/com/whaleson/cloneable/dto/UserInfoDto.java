@@ -12,4 +12,6 @@ public class UserInfoDto {
     private Integer userAge;
 
     private String account;
+
+    private AddressInfoDto address;
 }
