@@ -29,7 +29,7 @@ public class ClonableBeanUtils {
         Class<?> targetCls = target.getClass();
         for (Field field : sourceCls.getDeclaredFields()) {
             field.setAccessible(true);
-
+            //Judge whether it is a class created by JDK
             if (field.getType().getClassLoader() != null) {
                 Object subSource = field.get(source);
                 String subFieldName = field.getName();
@@ -38,7 +38,6 @@ public class ClonableBeanUtils {
                     targetObjectField.setAccessible(true);
                     Object subTarget =targetObjectField.get(target);
                     if(subTarget == null){
-                        System.out.println(targetObjectField.getType().getName());
                         subTarget = targetObjectField.getType().newInstance();
                     }
                     copyPropertiesByReflect(subSource,subTarget);
@@ -57,8 +56,6 @@ public class ClonableBeanUtils {
 
                     if (targetField != null) {
 
-                        //targetField.getDeclaringClass();
-                        System.out.println(target.getClass().getName() + "\t\t" +sourceFieldValue);
                         targetField.setAccessible(true);
                         targetField.set(target, sourceFieldValue);
                     }
@@ -113,6 +110,7 @@ public class ClonableBeanUtils {
                 }else {
                     //targetPropertyDescriptor
                     BeanInfo beanInfo = Introspector.getBeanInfo(targetPropertyDescriptor.getClass());
+                    //targetPropertyDescriptor.getValue();
 
 
                 }
