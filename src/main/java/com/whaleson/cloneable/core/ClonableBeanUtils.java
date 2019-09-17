@@ -89,30 +89,38 @@ public class ClonableBeanUtils {
         try {
             BeanInfo targetBeanInfo = Introspector.getBeanInfo(target.getClass());
 
-            PropertyDescriptor [] sourcePropertyDescriptors= targetBeanInfo.getPropertyDescriptors();
-            if(sourcePropertyDescriptors.length <= 0){
+            PropertyDescriptor [] targetPropertyDescriptors= targetBeanInfo.getPropertyDescriptors();
+            if(targetPropertyDescriptors.length <= 0){
                 throw new RuntimeException("target has no property");
             }
-            for (PropertyDescriptor targetPropertyDescriptor : sourcePropertyDescriptors) {
+            for (PropertyDescriptor targetPropertyDescriptor : targetPropertyDescriptors) {
                 Class targetFieldType = targetPropertyDescriptor.getPropertyType();
                 if( targetFieldType.getClassLoader() == null){
                     Method targetMethod = targetPropertyDescriptor.getWriteMethod();
                     String targetFieldName = targetPropertyDescriptor.getName();
 
-                    System.out.println("targetFieldType.getClassLoader()\t" + targetFieldType.getClassLoader());
 
                     PropertyDescriptor sourcePropertyDescriptor =BeanUtils.getPropertyDescriptor(source.getClass(),targetFieldName);
-                    if(!"class".equals(sourcePropertyDescriptor.getName())){
+                    if(sourcePropertyDescriptor != null && !"class".equals(sourcePropertyDescriptor.getName())){
                         Method sourceMethod = sourcePropertyDescriptor.getReadMethod();
                         Object sourceValue = sourceMethod.invoke(source);
                         targetMethod.invoke(target,sourceValue);
                     }
                 }else {
                     //targetPropertyDescriptor
-                    BeanInfo beanInfo = Introspector.getBeanInfo(targetPropertyDescriptor.getClass());
-                    //targetPropertyDescriptor.getValue();
 
+                    PropertyDescriptor subSourcePropertyDescriptor =BeanUtils.getPropertyDescriptor(source.getClass(),targetPropertyDescriptor.getName());
+                    Method subSourceMethod = subSourcePropertyDescriptor.getReadMethod();
+                    Object subSourceObject = subSourceMethod.invoke(source);
 
+                    Method subTargetMethod = targetPropertyDescriptor.getReadMethod();
+                    Object subTargetObject = subTargetMethod.invoke(target);
+                    if(subTargetObject == null){
+                        subTargetObject = targetPropertyDescriptor.getPropertyType().newInstance();
+                    }
+                    Method subTargetWriteMethod = targetPropertyDescriptor.getWriteMethod();
+                    copyPropertiesByIntrospector(subSourceObject,subTargetObject);
+                    subTargetWriteMethod.invoke(target,subTargetObject);
                 }
             }
         } catch (IntrospectionException e) {
@@ -120,6 +128,8 @@ public class ClonableBeanUtils {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
             e.printStackTrace();
         }
         source.getClass();
