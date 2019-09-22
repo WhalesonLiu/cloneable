@@ -1,9 +1,13 @@
 package com.whaleson.cloneable.dto;
 
+import com.whaleson.cloneable.entity.AddressInfo;
 import lombok.Data;
 
-@Data
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+@Data
 public class UserInfoDto {
     private String userInfoId;
 
@@ -13,5 +17,9 @@ public class UserInfoDto {
 
     private String account;
 
-    private AddressInfoDto address;
+    //private AddressInfoDto address;
+
+    private ArrayList<AddressInfoDto> addressInfos;
+
+    private HashSet<AddressInfoDto> addressInfoHashSet;
 }

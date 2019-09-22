@@ -10,6 +10,9 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ClonableBeanUtils {
 
@@ -24,6 +27,7 @@ public class ClonableBeanUtils {
         if (target == null) {
             throw new NullPointerException("Target must not be null");
         }
+
 
         Class<?> sourceCls = source.getClass();
         Class<?> targetCls = target.getClass();
@@ -51,6 +55,8 @@ public class ClonableBeanUtils {
                 String sourceFieldName = field.getName();
                 try {
                     Object sourceFieldValue = field.get(source);
+
+
                     //set value
                     Field targetField = getField(targetCls, sourceFieldName);
 

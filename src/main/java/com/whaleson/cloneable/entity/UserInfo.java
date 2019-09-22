@@ -1,9 +1,12 @@
 package com.whaleson.cloneable.entity;
 
-import com.whaleson.cloneable.dto.UserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @Data
 @AllArgsConstructor
@@ -20,5 +23,12 @@ public class UserInfo {
 
     private String password;
 
-    private AddressInfo address;
+    //private AddressInfo address;
+
+    private Array arrays;
+
+    private ArrayList<AddressInfo> addressInfos;
+
+    private HashSet<AddressInfo> addressInfoHashSet;
+
 }
